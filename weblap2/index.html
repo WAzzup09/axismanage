@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="img/png" href="">
+<title>AxisManage Software</title>
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">AxisManage</div>
+        <div class="nav-links">
+            <a href="#rolunk">Rólunk</a>
+            <a href="#szolg">Szolgáltatások</a>
+            <a href="reg.html" class="login-tab">Bejelentkezés</a>
+        </div>
+    </div>
+</nav>
+<header>
+<h1>AxisManage Software</h1>
+<p>Modern szoftvermegoldások vállalkozások számára</p>
+</header>
+
+<span id="rolunk">
+    <h2>Rólunk</h2>
+    <p id="asd">
+        Az <strong>AxisManage Software</strong> a modern vállalati hatékonyság záloga. Küldetésünk, hogy az 
+        összetett üzleti folyamatokat egyetlen, átlátható és automatizált rendszerbe integráljuk. 
+        Innovatív szoftvermegoldásunkat olyan vállalkozások számára fejlesztettük ki, amelyek 
+        szabadulni szeretnének az adminisztratív terhektől, és valódi adatvezérelt döntésekkel 
+        kívánják növelni versenyelőnyüket.
+    </p>
+    <p id="asd">
+        Csapatunk a legmodernebb technológiákat ötvözi a felhasználóbarát dizájnnal, így az <strong>AxisManage</strong> 
+        nem csupán egy eszköz, hanem egy stratégiai partner a cége napi működésében. Legyen szó 
+        erőforrás-tervezésről, munkafolyamat-automatizációról vagy egyedi webes alkalmazásokról, 
+        mi segítünk szintet lépni a digitális transzformáció útján.
+    </p>
+</span>
+
+<section class="container">
+
+<h2>Csapatunk</h2>
+
+<div class="team">
+
+<div class="team-card">
+
+<div class="card-inner">
+
+<div class="card-front">
+<img src="IMG_2063.jpg" alt="Team Member">
+<h3>Tímár Dániel</h3>
+</div>
+
+<div class="card-back">
+<p>
+Prezentáló és dokumentáló
+</p>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="team-card">
+
+<div class="card-inner">
+
+<div class="card-front">
+<img src="A2493CA5-7F68-4B2E-9627-E5BFC1A3DE28 (1).jpg" alt="Team Member">
+<h3>Weisz András</h3>
+</div>
+
+<div class="card-back">
+<p>
+Hálózat- és szoftverfejlesztő
+</p>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="team-card">
+
+<div class="card-inner">
+
+<div class="card-front">
+<img src="IMG_2062.jpg" alt="Team Member">
+<h3>Rigó Milán</h3>
+</div>
+
+<div class="card-back">
+<p>
+Webfejlesztő és helper
+</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section>
+    <span>
+<h2 id="szolg">Szolgáltatásaink</h2>
+</span>
+<div class="services">
+
+<div class="card">
+<h3>Webfejlesztés</h3>
+<p>Modern, gyors és reszponzív weboldalak és webalkalmazások.</p>
+</div>
+
+<div class="card">
+<h3>Egyedi szoftver</h3>
+<p>Testreszabott rendszerek vállalkozások számára.</p>
+</div>
+
+<div class="card">
+<h3>Tanácsadás</h3>
+<p>Technológiai és architekturális tanácsadás projektekhez.</p>
+</div>
+</section>
+
+<footer>
+ <a href="kepes.html" id="link">© 2026 AxisManage Software</a>
+</footer>
+
+<script>
+// 1. Görgetésre megjelenő elemek (Scroll Reveal)
+const observerOptions = { threshold: 0.1 };
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('reveal');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('section, span#rolunk').forEach(el => observer.observe(el));
+
+// 2. Sima átmenet a bejelentkezéshez
+document.querySelector('.login-tab').addEventListener('click', function(e) {
+    e.preventDefault(); // Megállítjuk az azonnali ugrást
+    const target = this.href;
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.href = "login.html";
+    }, 500);
+});
+</script>
+
+</body>
+</html>

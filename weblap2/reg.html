@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AxisManage Software - Regisztráció</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(-45deg, #0f172a, #1e293b, #0369a1, #0f172a);
+        background-size: 800%;
+        animation: gradient 15s ease infinite;
+        /* Áttűnés az oldalváltáshoz */
+        transition: opacity 0.5s ease;
+        opacity: 1;
+    }
+
+    /* Gradient animáció a háttérnek */
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .fade-out {
+        opacity: 0 !important;
+    }
+
+    .box {
+        position: relative;
+        max-width: 350px;
+        width: 100%;
+        padding: 30px;
+        border-radius: 12px;
+        background: lightgray;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .box:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Rázkódás animáció hibánál */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        50% { transform: translateX(8px); }
+        75% { transform: translateX(-8px); }
+    }
+
+    .shake-input {
+        animation: shake 0.3s ease-in-out;
+        border-color: #e74c3c !important;
+        box-shadow: 0 0 8px rgba(231, 76, 60, 0.4) !important;
+    }
+
+    .fade-shrink {
+        transform: scale(0.9) translateY(10px);
+        opacity: 0;
+    }
+
+    /* Modern Bezárás gomb */
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 32px;
+        height: 32px;
+        border: 1.5px solid rgba(0, 0, 0, 0.2);
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        font-weight: 300;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 8px;
+        background-color: transparent;
+        z-index: 10;
+    }
+
+    .close-btn:hover {
+        color: #ef4444;
+        border-color: #ef4444;
+        background-color: rgba(239, 68, 68, 0.05);
+        transform: rotate(90deg);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+    }
+
+    h2 {
+        margin-bottom: 25px;
+        color: black;
+    }
+
+    input {
+        width: 100%;
+        margin: 10px 0;
+        padding: 15px 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: all 0.3s;
+    }
+
+    input:focus {
+        border-color: #487ae6;
+        box-shadow: 0 0 5px rgba(72,122,230,0.4);
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 8px;
+        background-color: #487ae6;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    button:hover {
+        background-color: #365ec9;
+    }
+
+    button:active {
+        transform: scale(0.97);
+    }
+
+    .error { 
+        color: #e74c3c; 
+        margin-top: 10px; 
+        font-size: 14px;
+        min-height: 20px;
+    }
+
+    /* Modal és animáció */
+    @keyframes modalSlide {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0; top: 0;
+        width: 100%; height: 100%; 
+        background-color: rgba(15, 23, 42, 0.7); 
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 15% auto; 
+        padding: 30px;
+        width: 80%;
+        max-width: 400px;
+        text-align: center;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        animation: modalSlide 0.4s ease-out;
+    }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <span class="close-btn" onclick="goToHome()">&times;</span>
+    
+    <h2>Regisztráció</h2>
+    <input type="text" id="reg-username" placeholder="Felhasználónév">
+    <input type="email" id="reg-email" placeholder="Email">
+    <input type="password" id="reg-password" placeholder="Jelszó">
+    <button onclick="register()">Regisztráció</button>
+    <p class="error" id="reg-error"></p>
+</div>
+
+<div id="successModal" class="modal">
+  <div class="modal-content">
+    <h3 style="color: #2ecc71;">Sikeres regisztráció!</h3>
+    <p>Minden készen áll, most átirányítunk a belépéshez...</p>
+  </div>
+</div>
+
+<script>
+// Visszatérés a főoldalra elhalványulással
+function goToHome() {
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.href = "index.html"; 
+    }, 500);
+}
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function register() {
+    const usernameInput = document.getElementById("reg-username");
+    const emailInput = document.getElementById("reg-email");
+    const passwordInput = document.getElementById("reg-password");
+    const errorEl = document.getElementById("reg-error");
+    const box = document.querySelector(".box");
+
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    // Hiba animáció kezelése
+    const triggerError = (msg, element) => {
+        errorEl.textContent = msg;
+        
+        // Ha egy konkrét mező a hibás, azt rázzuk meg, egyébként az egész boxot
+        const target = element || box;
+        target.classList.add('shake-input');
+        
+        setTimeout(() => {
+            target.classList.remove('shake-input');
+        }, 300);
+    };
+
+    if (!username || !email || !password) {
+        triggerError("Mindhárom mező kitöltése kötelező!");
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        triggerError("Érvényes email címet adj meg!", emailInput);
+        return;
+    }
+
+    if (localStorage.getItem(username)) {
+        triggerError("Ez a felhasználónév már foglalt!", usernameInput);
+        return;
+    }
+
+    // Mentés
+    localStorage.setItem(username, JSON.stringify({email, password}));
+
+    errorEl.textContent = "";
+    
+    // Siker animációk
+    box.classList.add('fade-shrink');
+
+    setTimeout(() => {
+        const modal = document.getElementById("successModal");
+        modal.style.display = "block";
+    }, 300);
+
+    // Átirányítás elhalványulással
+    setTimeout(() => {
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 500);
+    }, 2500);
+}
+</script>
+</body>
+</html>
