@@ -15,6 +15,8 @@
         <div class="nav-links">
             <a href="#rolunk">Rólunk</a>
             <a href="#szolg">Szolgáltatások</a>
+            <a href="#GYIK">GYIK</a>
+            <a href="#terkep">Térkép</a>
             <a href="reg.html" class="login-tab">Bejelentkezés</a>
         </div>
     </div>
@@ -111,9 +113,9 @@ Webfejlesztő és helper
 </section>
 
 <section>
-    <span>
+
 <h2 id="szolg">Szolgáltatásaink</h2>
-</span>
+
 <div class="services">
 
 <div class="card">
@@ -130,6 +132,48 @@ Webfejlesztő és helper
 <h3>Tanácsadás</h3>
 <p>Technológiai és architekturális tanácsadás projektekhez.</p>
 </div>
+</section>
+
+<section class="faq-container">
+    <h2 id="GYIK">Gyakori Kérdések</h2>
+    
+    <div class="faq-item">
+        <button class="faq-question">Mennyi idő alatt készül el egy egyedi szoftver? <span class="arrow">+</span></button>
+        <div class="faq-answer">
+            <p>A fejlesztési idő nagyban függ a projekt összetettségétől. Egy egyszerűbb webes alkalmazás 4-6 hét alatt elkészülhet, míg egy komplex vállalati irányítási rendszer (ERP) több hónapot is igénybe vehet. Minden esetben részletes ütemtervet adunk az ajánlatunk mellé.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">Van lehetőség későbbi módosításokra a szoftverben? <span class="arrow">+</span></button>
+        <div class="faq-answer">
+            <p>Természetesen! Az AxisManage rendszereit modulárisan építjük fel, így a későbbiekben bármikor bővíthetők új funkciókkal vagy módosíthatók a meglévő folyamatok a vállalkozás növekedésével párhuzamosan.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">Milyen technológiákkal dolgoztok? <span class="arrow">+</span></button>
+        <div class="faq-answer">
+            <p>A legmodernebb eszközöket használjuk: webfejlesztéshez React, Vue vagy Angular keretrendszereket, backend oldalon Node.js vagy Python alapú megoldásokat alkalmazunk, az adatbiztonságot pedig felhőalapú infrastruktúrával garantáljuk.</p>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="map-section">
+    <h2 id="terkep">Hol talál meg minket?</h2>
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2347.4238290338258!2d20.23823096182246!3d47.73952490229683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4740f1be151f5fd1%3A0x966ac622caf462b2!2sGhost%20Barber%20Shop%20Kompolt!5e1!3m2!1shu!2shu!4v1773770876963!5m2!1shu!2shu" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" 
+            width="100%" 
+            height="450" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
 </section>
 
 <footer>
@@ -158,6 +202,27 @@ document.querySelector('.login-tab').addEventListener('click', function(e) {
         window.location.href = "login.html";
     }, 500);
 });
+
+
+// GYIK Lenyiló funkció
+document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+        const faqItem = button.parentElement;
+        
+        // Bezárjuk a többi nyitott elemet (opcionális, ha csak egy lehet nyitva)
+        document.querySelectorAll('.faq-item').forEach(item => {
+            if (item !== faqItem) {
+                item.classList.remove('active');
+            }
+        });
+
+        // Toggle: ki-be kapcsoljuk a jelenlegit
+        faqItem.classList.toggle('active');
+    });
+});
+
+
+
 </script>
 
 </body>

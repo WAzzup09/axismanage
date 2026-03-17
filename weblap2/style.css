@@ -350,3 +350,112 @@ section, span {
 .login-tab:hover {
     background-color: #365ec9;
 }
+
+/* ===== JAVÍTOTT SPAN (korábban ez okozta a nagy üres tereket) ===== */
+span {
+    display: block; /* Hogy a margin/padding megfelelően működjön */
+    text-align: center;
+    max-width: 800px;
+    margin: 40px auto; /* Normalizált margin: 40px fent/lent, auto középre */
+    padding: 20px;     /* A 400px-ről levéve normál méretre */
+}
+
+/* ===== JAVÍTOTT GYIK (Minimalista és vékony) ===== */
+.faq-container {
+    max-width: 700px; /* Kicsit keskenyebb, hogy elegánsabb legyen */
+    margin: 40px auto;
+    padding: 0 20px;
+    opacity: 1; /* Biztosítjuk a láthatóságot */
+    transform: none;
+}
+
+.faq-item {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03); /* Nagyon enyhe háttér */
+    border: 1px solid rgba(56, 189, 248, 0.1); /* Finom kék keret */
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-question {
+    width: 100%;
+    padding: 12px 20px; /* Vékonyabb (12px függőlegesen) */
+    background: #1e293b; 
+    color: white;
+    border: none;
+    text-align: left;
+    font-size: 16px; /* Kisebb, modernebb betűméret */
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.faq-question:hover {
+    background: #24334a; /* Csak egy kicsit világosodik ki */
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+    background: rgba(0, 0, 0, 0.2); /* Sötét háttér a válasznak */
+}
+
+.faq-answer p {
+    padding: 15px 20px;
+    margin: 0;
+    color: #94a3b8; /* Szürkébb szöveg a válasznak */
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Aktív állapot és nyíl animáció */
+.faq-item.active .faq-answer {
+    max-height: 300px;
+}
+
+.faq-item.active .faq-question {
+    background: #0369a1; /* Kékre vált, ha nyitva van */
+}
+
+.faq-item.active .arrow {
+    transform: rotate(45deg);
+    color: white;
+}
+
+.arrow {
+    font-size: 20px;
+    color: #38bdf8;
+    transition: transform 0.3s ease;
+}
+
+
+
+.map-section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.map-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    line-height: 0; /* Megszünteti az apró rést az iframe alatt */
+}
+
+.map-container iframe {
+    width: 100%;
+    border-radius: 15px; /* Lekerekített sarkok, hogy illeszkedjen a kártyákhoz */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(56, 189, 248, 0.2) !important; /* Finom kék keret */
+    transition: filter 0.5s ease;
+}
+
+/* Ha ráközelít az egérrel, visszavált színesre */
+.map-container iframe:hover {
+    filter: grayscale(0%) invert(0%) hue-rotate(0deg) brightness(100%);
+}
