@@ -1,16 +1,186 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-<link rel="icon" type="img/png" href="">
-<title>AxisManage Software</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="img/png" href="axis.png">
+    <title>AxisManage Software</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #0369a1, #0f172a);
+            background-size: 800%;
+            animation: gradient 15s ease infinite;
+            transition: opacity 0.5s ease;
+            opacity: 1;
+            color: black;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: black;
+        }
+
+        /* Modern Bezárás gomb */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid rgba(0, 0, 0, 0.2);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 300;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+            background-color: transparent;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: #ef4444;
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.05);
+            transform: rotate(90deg);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+        }
+
+        .box {
+            position: relative;
+            max-width: 700px;
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: 12px;
+            background: lightgray;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .container{
+            display: flex;
+            gap: 10px;
+        }
+
+        .container-sidebar{
+            flex: 1;
+            padding: 20px;
+            border-radius: 10%;
+            background-color: rgba(200, 200, 200, 0.5);
+        }
+
+        .container-main{
+            flex: 2;
+            padding: 20px;
+            border-radius: 10%;
+            background-color: rgba(200, 200, 200, 0.5);
+        }
+
+        /* A gombok tárolója egymás mellé teszi a gombokat */
+        .tab-buttons {
+        display: flex;
+        margin-bottom: 10px;
+        }
+
+        /* Maguk a gombok formázása */
+        .tab-btn {
+        flex: 1;               /* Egyenlő szélességűek legyenek */
+        padding: 10px;
+        cursor: pointer;       /* Legyen "kattintható" az egérmutató */
+        background-color: #ddd;
+        border: none;
+        font-weight: bold;
+        }
+
+        /* Így néz ki az a gomb, amelyik épp ki van választva */
+        .tab-btn.active {
+        background-color: lightblue; /* Érdemes az oldalsáv színéhez igazítani */
+        color: black;
+        }
+
+        /* A tartalom doboz formázása */
+        .tab-content {
+        padding: 10px;
+        background-color: lightgrey; /* Kicsit áttetsző fehér háttér */
+        border-radius: 5px;
+        }
+
+        /* .box:hover {
+            transform: translateY(-5px);
+        } */
+    </style>
+    <script>
+        function openTab(evt, tabId) {
+            // 1. Elrejtjük az összes fül tartalmát
+            let contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+            contents[i].style.display = "none";
+            }
+
+            // 2. Levesszük az "active" osztályt az összes gombról
+            let buttons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < buttons.length; i++) {
+            buttons[i].className = buttons[i].className.replace(" active", "");
+            }
+
+            // 3. Megjelenítjük a kattintott fül tartalmát, és a gombot "aktívvá" tesszük
+            document.getElementById(tabId).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function goToHome() {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = "index.html"; 
+            }, 500);
+        }
+    </script>
 </head>
 
 <body>
     <!--EZT MAJD ÁT KELL ÍRNI-->
-<h2>Szolgáltatásaink</h2>
+<div class="box">
+    <span class="close-btn" style="margin: auto;" onclick="goToHome()">&times;</span>
+
+    <h2>Felhasználókezelő</h2>
+    <hr>
+    <div class="container">
+        <div class="container-sidebar">
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="openTab(event, 'fül1')">1. Fül</button>
+                <button class="tab-btn" onclick="openTab(event, 'fül2')">2. Fül</button>
+            </div>
+
+            <div id="fül1" class="tab-content" style="display: block;">
+                <h3>Felhasználók kezelése</h3>
+            </div>
+
+            <div id="fül2" class="tab-content" style="display: none;">
+                <h3>Keresés</h3>
+                <label for="nev">Név</label>
+                <input type="text" name="nev">
+            </div>
+            
+            
+        </div>
+        <div class="container-main">
+            <h3>Felhasználók</h3>
+        </div>
+    </div>
+</div>
 
 
 </body>
