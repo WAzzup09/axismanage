@@ -27,6 +27,44 @@
             color: black;
         }
 
+        input {
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #487ae6;
+            box-shadow: 0 0 5px rgba(72,122,230,0.4);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #487ae6;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #365ec9;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
         /* Modern Bezárás gomb */
         .close-btn {
             position: absolute;
@@ -59,8 +97,7 @@
 
         .box {
             position: relative;
-            max-width: 700px;
-            width: 100%;
+            width: 80%;
             padding: 40px 30px;
             border-radius: 12px;
             background: lightgray;
@@ -99,28 +136,25 @@
         flex: 1;               /* Egyenlő szélességűek legyenek */
         padding: 10px;
         cursor: pointer;       /* Legyen "kattintható" az egérmutató */
-        background-color: #ddd;
+        background-color: #487ae6;
         border: none;
         font-weight: bold;
         }
 
         /* Így néz ki az a gomb, amelyik épp ki van választva */
         .tab-btn.active {
-        background-color: lightblue; /* Érdemes az oldalsáv színéhez igazítani */
-        color: black;
+        background-color: #224ab5; /* Érdemes az oldalsáv színéhez igazítani */
+        color: white;
         }
 
         /* A tartalom doboz formázása */
         .tab-content {
         padding: 10px;
-        background-color: lightgrey; /* Kicsit áttetsző fehér háttér */
+        background-color: rgba(255,255,255,0.3); /* Kicsit áttetsző fehér háttér */
         border-radius: 5px;
         }
-
-        /* .box:hover {
-            transform: translateY(-5px);
-        } */
     </style>
+
     <script>
         function openTab(evt, tabId) {
             // 1. Elrejtjük az összes fül tartalmát
@@ -146,6 +180,279 @@
                 window.location.href = "index.html"; 
             }, 500);
         }
+
+       // --- 1. ALAPBEÁLLÍTÁSOK ÉS ADATBÁZIS BETÖLTÉSE ---
+        const DEFAULT_AVATAR = 'https://placehold.co/64?text=Profilkép';
+
+        const savedUsers = localStorage.getItem('myUserList');
+        let users = savedUsers ? JSON.parse(savedUsers) : [
+            { id: 'ID-PL1', name: 'Példa Miklós', email: 'miklos@pelda.hu', avatar: '' },
+            { id: 'ID-PL2', name: 'Példa Panna', email: 'panna@pelda.hu', avatar: '' }
+        ];
+
+        // Ezzel tartjuk nyilván, hogy épp melyik ID-jú felhasználót szerkesztjük
+        let editingUserId = null; 
+
+        // --- 2. SEGÉDFÜGGVÉNY: MENTÉS A LOCALSTORAGE-BA ---
+        function saveToStorage() {
+            localStorage.setItem('myUserList', JSON.stringify(users));
+        }
+
+        // --- 3. RENDERELÉS (Megjelenítés a jobb oldali sávban) ---
+        function renderUsers(usersToRender) {
+            const container = document.getElementById('right-side-user-list');
+            if (!container) return; 
+            
+            container.innerHTML = '';
+
+            if (usersToRender.length === 0) {
+                container.innerHTML = '<p>Nincs találat.</p>';
+                return;
+            }
+
+            usersToRender.forEach(user => {
+                const imgSrc = user.avatar ? user.avatar : DEFAULT_AVATAR;
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                
+                // Alap stílusok a kártyának
+                userCard.style.display = 'flex';
+                userCard.style.alignItems = 'center';
+                userCard.style.marginBottom = '10px';
+                userCard.style.backgroundColor = '#e0e0e0';
+                userCard.style.padding = '10px';
+                userCard.style.borderRadius = '5px';
+
+                // Ha ezt a felhasználót szerkesztjük éppen, beviteli mezőket rajzolunk
+                if (user.id === editingUserId) {
+                userCard.innerHTML = `
+                    <img src="${imgSrc}" class="user-avatar" alt="Profilkép" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                    <div class="user-info" style="flex: 1; margin-left: 15px; display: flex; flex-direction: column; gap: 5px;">
+                    <input type="text" id="editName_${user.id}" value="${user.name}" style="padding: 5px; border: 1px solid #aaa; border-radius: 3px;">
+                    <input type="email" id="editEmail_${user.id}" value="${user.email}" style="padding: 5px; border: 1px solid #aaa; border-radius: 3px;">
+                    <input type="file" id="editPic_${user.id}" accept="image/png, image/jpeg, image/webp" style="font-size: 12px;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px; margin-left: 10px;">
+                    <button onclick="saveEdit('${user.id}')" style="background-color: #5cb85c; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Mentés</button>
+                    <button onclick="cancelEdit()" style="background-color: #666; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Mégse</button>
+                    </div>
+                `;
+                } 
+                // Ha nem szerkesztjük, akkor a normál nézetet rajzoljuk ki
+                else {
+                userCard.innerHTML = `
+                    <img src="${imgSrc}" class="user-avatar" alt="Profilkép" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                    <div class="user-info" style="flex: 1; margin-left: 15px;">
+                    <p style="margin: 0; font-weight: bold;">${user.name}</p>
+                    <p style="margin: 0; font-size: 14px;">${user.email}</p>
+                    <p style="margin: 0; font-size: 12px; color: #666;">ID: ${user.id}</p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <button onclick="editUser('${user.id}')" style="background-color: #f0ad4e; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Szerkesztés</button>
+                    <button onclick="deleteUser('${user.id}')" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Törlés</button>
+                    </div>
+                `;
+                }
+
+                container.appendChild(userCard);
+            });
+        }
+
+        // --- 4. VALIDÁCIÓS FÜGGVÉNY ---
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // --- 5. SZERKESZTÉS LOGIKÁJA ---
+
+        // Amikor rákattintunk a Szerkesztés gombra
+        function editUser(userId) {
+            editingUserId = userId;
+            searchUsers(); // Újra renderelünk, figyelembe véve a keresőt is
+        }
+
+        // Amikor rákattintunk a Mégse gombra
+        function cancelEdit() {
+            editingUserId = null;
+            searchUsers();
+        }
+
+        // Amikor rákattintunk a Mentés gombra a szerkesztésnél
+        function saveEdit(userId) {
+            const nameInput = document.getElementById(`editName_${userId}`);
+            const emailInput = document.getElementById(`editEmail_${userId}`);
+            const picInput = document.getElementById(`editPic_${userId}`);
+
+            const newName = nameInput.value.trim();
+            const newEmail = emailInput.value.trim();
+
+            // Ellenőrzések
+            if (!newName || !newEmail) {
+                alert('A név és az e-mail cím megadása kötelező!');
+                return;
+            }
+            if (!isValidEmail(newEmail)) {
+                alert('Kérlek, érvényes e-mail címet adj meg!');
+                return;
+            }
+
+            // Megkeressük a tömbben a módosítandó felhasználót
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex === -1) return;
+
+            // Frissítjük a szöveges adatokat
+            users[userIndex].name = newName;
+            users[userIndex].email = newEmail;
+
+            // Ha töltöttek fel új képet, azt is feldolgozzuk
+            if (picInput.files && picInput.files.length > 0) {
+                const file = picInput.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                
+                if (!allowedTypes.includes(file.type)) {
+                alert('A profilkép csak JPG, PNG vagy WEBP formátumú kép lehet!');
+                return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                users[userIndex].avatar = e.target.result; // Új kép beállítása
+                finalizeEdit();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // Ha nincs új kép, csak lezárjuk a szerkesztést
+                finalizeEdit();
+            }
+        }
+
+        // Közös segédfüggvény a szerkesztés lezárására
+        function finalizeEdit() {
+            editingUserId = null; // Kilépünk a szerkesztő módból
+            saveToStorage();      // Mentünk a böngészőbe
+            searchUsers();        // Frissítjük a felületet
+        }
+
+        // --- 6. HOZZÁADÁS LOGIKA (Változatlan) ---
+        function addUser() {
+            const nameInput = document.getElementById('newName');
+            const emailInput = document.getElementById('newEmail');
+            const picInput = document.getElementById('newPic');
+
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+
+            if (!name || !email) {
+                alert('Kérlek, add meg a nevet és az e-mail címet!');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('Kérlek, érvényes e-mail címet adj meg! (pl. pelda@email.hu)');
+                return;
+            }
+
+            if (picInput.files && picInput.files.length > 0) {
+                const file = picInput.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                
+                if (!allowedTypes.includes(file.type)) {
+                alert('A profilkép csak JPG, PNG vagy WEBP formátumú kép lehet!');
+                picInput.value = ''; 
+                return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                saveNewUser(name, email, e.target.result);
+                clearInputs(nameInput, emailInput, picInput);
+                };
+                reader.readAsDataURL(file);
+
+            } else {
+                saveNewUser(name, email, '');
+                clearInputs(nameInput, emailInput, picInput);
+            }
+        }
+
+        // --- ÚJ ID GENERÁLÁSA (Sorrendben, ütközésmentesen) ---
+        function generateNextId() {
+            if (users.length === 0) {
+                return 'ID-001'; // Ha teljesen üres a lista, innen indulunk
+            }
+
+            let maxNum = 0;
+
+            // Végigmegyünk az összes felhasználón, és megkeressük a legnagyobb számot
+            users.forEach(user => {
+                const idString = user.id.replace('ID-', ''); 
+                const idNum = parseInt(idString, 10); 
+                
+                if (!isNaN(idNum) && idNum > maxNum) {
+                maxNum = idNum;
+                }
+            });
+
+            // A legnagyobbat megnöveljük 1-gyel
+            const nextNum = maxNum + 1;
+            
+            // Visszaalakítjuk 'ID-XXX' formátumra (pl. 003)
+            return 'ID-' + nextNum.toString().padStart(3, '0');
+        }
+
+        // --- TÉNYLEGES MENTÉS A TÖMBBE ---
+        function saveNewUser(name, email, avatarData) {
+            
+            // ITT VAN A VÁLTOZÁS: A random szám helyett meghívjuk az új függvényt
+            const newId = generateNextId();
+            
+            const newUser = {
+                id: newId,
+                name: name,
+                email: email,
+                avatar: avatarData
+            };
+
+            users.push(newUser); 
+            saveToStorage(); 
+            searchUsers(); 
+        }
+
+        // --- 8. MEZŐK KIÜRÍTÉSE ---
+        function clearInputs(nameInput, emailInput, picInput) {
+            nameInput.value = '';
+            emailInput.value = '';
+            if(picInput) picInput.value = '';
+        }
+
+        // --- 9. TÖRLÉS ---
+        function deleteUser(userId) {
+            if(confirm('Biztosan törölni szeretnéd ezt a felhasználót?')) {
+                users = users.filter(user => user.id !== userId);
+                saveToStorage(); 
+                searchUsers(); 
+            }
+        }
+
+        // --- 10. KERESÉS ---
+        function searchUsers() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            
+            const filteredUsers = users.filter(user => {
+                return user.name.toLowerCase().includes(searchTerm) || 
+                    user.email.toLowerCase().includes(searchTerm) || 
+                    user.id.toLowerCase().includes(searchTerm);
+            });
+
+            renderUsers(filteredUsers);
+        }
+
+        // --- 11. INICIALIZÁLÁS BETÖLTÉSKOR ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUsers(users);
+        });
     </script>
 </head>
 
@@ -160,24 +467,35 @@
         <div class="container-sidebar">
 
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="openTab(event, 'fül1')">1. Fül</button>
-                <button class="tab-btn" onclick="openTab(event, 'fül2')">2. Fül</button>
+                <button class="tab-btn active" onclick="openTab(event, 'fül1')">Hozzáadás</button>
+                <button class="tab-btn" onclick="openTab(event, 'fül2')">Keresés</button>
             </div>
 
             <div id="fül1" class="tab-content" style="display: block;">
-                <h3>Felhasználók kezelése</h3>
+                <label for="nev">*Név:</label> <br>
+                <input type="text" id="newName" placeholder="Folyékony Szilárd" name="nev"> <br>
+
+                <label for="email">*Email cím:</label> <br>
+                <input type="email" id="newEmail" placeholder="foly.szil@pelda.hu" name="email"> <br>
+
+                <label for="profkep">Profilkép:</label> <br>
+                <input type="file" id="newPic" placeholder="Profilkép" name="profkep" accept="image/png, image/jpeg, image/webp"> <br>
+
+                <button onclick="addUser()">Hozzáadás</button> <br>
+
+                <small>*Kötelező elemek</small>
             </div>
 
             <div id="fül2" class="tab-content" style="display: none;">
-                <h3>Keresés</h3>
-                <label for="nev">Név</label>
-                <input type="text" name="nev">
+                <p>Kereshet <b>név</b>, <b>email cím</b>, vagy <b>ID</b> alapján is!</p>
+                <input id="searchInput" onkeyup="searchUsers()">
             </div>
             
             
         </div>
         <div class="container-main">
             <h3>Felhasználók</h3>
+            <div id="right-side-user-list"></div>
         </div>
     </div>
 </div>
